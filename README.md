@@ -1,4 +1,4 @@
-![# Search-in-files](search-in-files.png)<br>
+
 ![GitHub author](https://img.shields.io/badge/made_by-OldScripter-009919)
 ![GitHub repo size](https://img.shields.io/github/repo-size/OldScripter/Search-in-files)
 ![GitHub author](https://img.shields.io/badge/made_on-C++-red)

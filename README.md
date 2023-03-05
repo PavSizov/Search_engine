@@ -1,7 +1,3 @@
-![# Search-in-files](search-in-files.png)<br>
-![GitHub author](https://img.shields.io/badge/made_by-OldScripter-009919)
-![GitHub repo size](https://img.shields.io/github/repo-size/OldScripter/Search-in-files)
-![GitHub author](https://img.shields.io/badge/made_on-C++-red)
 <br><i> Search for words in files</i> | <i> Поиск слов в файлах.</i>
 
 ## Description | Описание
@@ -12,7 +8,7 @@ Application for searching of request words (JSON file requests.json) in resource
 ## Technologies
 ![GitHub author](https://img.shields.io/badge/C++-14-005199?style=for-the-badge)<br>
 
-![GitHub author](https://img.shields.io/badge/CMake-3.22-005199?style=for-the-badge)<br>
+![GitHub author](https://img.shields.io/badge/CMake-3.21-005199?style=for-the-badge)<br>
 https://cmake.org/<br>
 
 ![GitHub author](https://img.shields.io/badge/JSON-3.10.5-orange?style=for-the-badge)<br>

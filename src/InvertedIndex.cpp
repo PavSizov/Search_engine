@@ -1,5 +1,7 @@
 #include "InvertedIndex.h"
 
+
+
 const int HEADER_SPACER = 15;
 
 //инициализация статических элементов -----------------------------
@@ -18,14 +20,22 @@ void InvertedIndex::updateDocumentBase(const std::vector<std::string>& input_doc
 
     frequencyDictionary.clear();
     size_t docId = 0;
+    std::vector <std::thread> threads;
     for (const auto& content : input_docs)
     {
         // Start indexing thread.
         std::thread index([this, &content, docId](){indexTheFile(content, docId);});
         ++docId;
-        index.join();
+        threads.push_back(move(index));
     }
     indexingIsOngoing = false;
+    for (auto& t : threads)
+    {
+        if (t.joinable())
+        {
+            t.join();
+        }
+    }
 }
 
 std::vector<Entry> InvertedIndex::getWordCount(const std::string& word)

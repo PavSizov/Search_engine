@@ -1,5 +1,6 @@
 #include "ConverterJSON.h"
 
+
 const int LINE_LENGTH = 46;
 const int HEADER_SPACER = 15;
 
@@ -11,7 +12,9 @@ ConverterJSON* ConverterJSON::getInstance()
     {
         instance = new ConverterJSON();
     }
+
     return instance;
+
 }
 //---------------------------------------------------------
 
@@ -67,10 +70,12 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
             for (auto request : answers)
             {
                 answersDict["answers"]["request" + std::to_string(requestCount)]["result"] = !request.empty();
+
                 if (request.size() == 1)
                 {
                     answersDict["answers"]["request" + std::to_string(requestCount)]["docid"] = request[0].first;
                     answersDict["answers"]["request" + std::to_string(requestCount)]["rank"] = request[0].second;
+
                 }
                 else
                 {
@@ -83,7 +88,9 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
 
                         auto relevance_member = nlohmann::json::object();
                         relevance_member["docid"] = relevance.first;
+
                         relevance_member["rank"] = relevance.second;
+
                         relevance_array.push_back(relevance_member);
                     }
                     answersDict["answers"]["request" + std::to_string(requestCount)]["relevance"] = relevance_array;
@@ -103,6 +110,7 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
     {
         std::cout << "No answers to push.\n";
     }
+    delete instance;
 }
 
 void ConverterJSON::readConfigFile(std::string path)
@@ -111,7 +119,16 @@ void ConverterJSON::readConfigFile(std::string path)
     if (configFile.is_open())
     {
         nlohmann::json configDictionary;
+        try
+        {
+            configDictionary = nlohmann::json::parse(configFile);
+        }
+        catch (nlohmann::json::parse_error& ex)
+        {
+            std::cerr << "parse error at byte " << ex.byte << std::endl;
+        }
         configFile >> configDictionary;
+
         applicationName = configDictionary["config"]["name"];
         applicationVersion = configDictionary["config"]["version"];
         maxResponses = configDictionary["config"]["max_responses"];
@@ -145,6 +162,14 @@ void ConverterJSON::readRequestFile(std::string path)
     if (configFile.is_open())
     {
         nlohmann::json requestsDictionary;
+        try
+        {
+            requestsDictionary = nlohmann::json::parse(configFile);
+        }
+        catch (nlohmann::json::parse_error& ex)
+        {
+            std::cerr << "parse error at byte " << ex.byte << std::endl;
+        }
         configFile >> requestsDictionary;
         requests.clear();
         for (auto f : requestsDictionary["requests"])
@@ -164,3 +189,4 @@ void ConverterJSON::readRequestFile(std::string path)
 int ConverterJSON::getMaxResponses() const {
     return maxResponses;
 }
+

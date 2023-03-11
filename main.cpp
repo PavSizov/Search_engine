@@ -22,12 +22,15 @@ void writeAnswers(const std::vector<std::vector<RelativeIndex>>& allRequestsResu
         {
             std::pair<int, float> relevancePair;
             relevancePair.first = (int) pageRelevance.doc_id;
+
             relevancePair.second = pageRelevance.rank;
+
             requestResultReadyForJSON.push_back(relevancePair);
         }
         allRequestsResultsReadyForJSON.push_back(requestResultReadyForJSON);
     }
     ConverterJSON::getInstance()->putAnswers(allRequestsResultsReadyForJSON);
+
 }
 
 int main()
@@ -46,6 +49,8 @@ int main()
     auto allRequestsResults = searchServer.search(ConverterJSON::getInstance()->getRequests());
     writeAnswers(allRequestsResults);
     std::cout << "End of search.\n";
+    delete invertedIndex;
+    
     //Приостановить консоль - раскомментировать, если пауза необходима:
     std::cin.get();
     return 0;

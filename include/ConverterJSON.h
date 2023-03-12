@@ -4,6 +4,7 @@
 #include <fstream>
 #include "nlohmann/json.hpp"
 
+
 class ConverterJSON
 {
     public:
@@ -64,4 +65,5 @@ class ConverterJSON
     std::vector<std::string> resourcesPaths;
     std::vector<std::string> textDocuments;
     std::vector<std::string> requests;
+
 };

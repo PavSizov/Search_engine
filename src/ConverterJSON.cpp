@@ -119,15 +119,34 @@ void ConverterJSON::readConfigFile(std::string path)
     if (configFile.is_open())
     {
         nlohmann::json configDictionary;
-        try
+       try
         {
-            configDictionary = nlohmann::json::parse(configFile);
+           configDictionary = nlohmann::json::parse(configFile);
+           applicationName = configDictionary["config"]["name"];
+           applicationVersion = configDictionary["config"]["version"];
+        maxResponses = configDictionary["config"]["max_responses"];
+        resourcesPaths.clear();
+        for (auto f : configDictionary["files"])
+        {
+            resourcesPaths.push_back(f);
+        }
+
+        for (int i = 0; i < HEADER_SPACER; ++i) {std::cout << "=";}
+        std::cout << "[Initialization]";
+        for (int i = 0; i < HEADER_SPACER; ++i) {std::cout << "=";}
+        std::cout << "\n" << applicationName << "\n";
+        std::cout << "Version: " << applicationVersion << "\n";
+        std::cout << "Max responses per request: " << maxResponses << "\n";
+        std::cout << "Files library: " << resourcesPaths.size() << "\n";
+        for (int i = 0; i < LINE_LENGTH; ++i) {std::cout << "-";}
+        std::cout << "\n";
+        configFile.close();
         }
         catch (nlohmann::json::parse_error& ex)
         {
             std::cerr << "parse error at byte " << ex.byte << std::endl;
         }
-        configFile >> configDictionary;
+        /*configFile >> configDictionary;
 
         applicationName = configDictionary["config"]["name"];
         applicationVersion = configDictionary["config"]["version"];
@@ -147,7 +166,7 @@ void ConverterJSON::readConfigFile(std::string path)
         std::cout << "Files library: " << resourcesPaths.size() << "\n";
         for (int i = 0; i < LINE_LENGTH; ++i) {std::cout << "-";}
         std::cout << "\n";
-        configFile.close();
+        configFile.close();*/
     }
     else
     {
@@ -165,13 +184,7 @@ void ConverterJSON::readRequestFile(std::string path)
         try
         {
             requestsDictionary = nlohmann::json::parse(configFile);
-        }
-        catch (nlohmann::json::parse_error& ex)
-        {
-            std::cerr << "parse error at byte " << ex.byte << std::endl;
-        }
-        configFile >> requestsDictionary;
-        requests.clear();
+             requests.clear();
         for (auto f : requestsDictionary["requests"])
         {
             requests.push_back(f);
@@ -179,6 +192,20 @@ void ConverterJSON::readRequestFile(std::string path)
         configFile.close();
         std::string requestOrRequests = requests.size() == 1 ? " request is " : " requests are ";
         std::cout << requests.size() << requestOrRequests << "found\n";
+        }
+        catch (nlohmann::json::parse_error& ex)
+        {
+            std::cerr << "parse error at byte " << ex.byte << std::endl;
+        }
+        /*configFile >> requestsDictionary;
+        requests.clear();
+        for (auto f : requestsDictionary["requests"])
+        {
+            requests.push_back(f);
+        }
+        configFile.close();
+        std::string requestOrRequests = requests.size() == 1 ? " request is " : " requests are ";
+        std::cout << requests.size() << requestOrRequests << "found\n";*/
     }
     else
     {

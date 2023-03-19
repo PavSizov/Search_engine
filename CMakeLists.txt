@@ -5,31 +5,40 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXE_LINKER_FLAGS "-static")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
-set(MY_INCLUDE_DIR
-        ${CMAKE_SOURCE_DIR}/include
-        )
-set(MY_SRC_DIR ${CMAKE_SOURCE_DIR}/src)
+add_subdirectory(nlohmann_json)
+add_subdirectory(Google_tests/lib)
 
-include(FetchContent)
-
-FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG release-1.12.1
+add_executable(
+        ${PROJECT_NAME}
+        src/main.cpp
+        src/ConverterJSON.cpp
+        src/InvertedIndex.cpp
+        src/SearchServer.cpp
 )
-FetchContent_MakeAvailable(googletest)
 
-FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
-FetchContent_MakeAvailable(json)
+include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json ${CMAKE_EXE_LINKER_FLAGS})
 
-enable_testing()
-
-add_subdirectory(src)
+# Copy auxiliary files to binary folder: ==========================================================
+add_custom_command(
+        TARGET ${PROJECT_NAME}  POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/config.json
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/config.json)
+add_custom_command(
+        TARGET ${PROJECT_NAME}  POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/requests.json
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/requests.json)
+add_custom_command(
+        TARGET ${PROJECT_NAME}  POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/answers.json
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/answers.json)
+add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/resources
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources)
 add_subdirectory(Google_tests)
-
-
-
 
